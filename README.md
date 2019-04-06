@@ -1,4 +1,4 @@
-# sensors-metrics [![Build Status](https://travis-ci.org/eltherion/sensors-metrics.svg?branch=master)](https://travis-ci.org/eltherion/sensors-metrics) [![Coverage Status](https://coveralls.io/repos/github/eltherion/sensors-metrics/badge.svg?branch=master)](https://coveralls.io/github/eltherion/sensors-metrics?branch=master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+# sensors-metrics [![Build Status](https://travis-ci.com/eltherion/sensors-metrics.svg?branch=master)](https://travis-ci.org/eltherion/sensors-metrics) [![Coverage Status](https://coveralls.io/repos/github/eltherion/sensors-metrics/badge.svg?branch=master)](https://coveralls.io/github/eltherion/sensors-metrics?branch=master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 Application that extracts measurements from simple sensors log files and displays basic statistics to standard output.
 
 ## Running aplication
