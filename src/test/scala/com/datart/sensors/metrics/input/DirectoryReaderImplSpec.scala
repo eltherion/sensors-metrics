@@ -26,7 +26,7 @@ class DirectoryReaderImplSpec extends AsyncWordSpec with Matchers {
 
       "return a nonempty stream of files in a nonempty directory is provided" in {
         val nonEmptyDirectory = File.newTemporaryDirectory()
-        val temporaryFile = File.newTemporaryFile(parent = Option(nonEmptyDirectory)).toJava
+        val temporaryFile     = File.newTemporaryFile(parent = Option(nonEmptyDirectory)).toJava
 
         testedImplementation
           .getFiles(nonEmptyDirectory.toJava)

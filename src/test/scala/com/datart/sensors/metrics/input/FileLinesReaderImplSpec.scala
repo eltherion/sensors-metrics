@@ -27,8 +27,8 @@ class FileLinesReaderImplSpec extends AsyncWordSpec with Matchers {
       "return a nonempty stream of file lines in a nonempty file is provided" in {
         val nonEmptyFile = File.newTemporaryFile()
 
-        val line1 = "line1"
-        val line2 = "line2"
+        val line1         = "line1"
+        val line2         = "line2"
         val expectedLines = List(line1, line2)
 
         nonEmptyFile.write(expectedLines.mkString("\n"))
