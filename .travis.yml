@@ -1,0 +1,18 @@
+language: scala
+
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - oraclejdk11
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+  - openjdk-ea
+
+scala:
+  - 2.12.8
+
+script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test
+
+after_success: "sbt coverageReport coveralls"
