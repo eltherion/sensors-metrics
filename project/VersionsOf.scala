@@ -1,4 +1,5 @@
 object VersionsOf {
+  val betterFiles     = "3.7.1"
   val logbackClassic  = "1.2.3"
   val metricsScala    = "4.0.4"
   val monix           = "3.0.0-RC2"
