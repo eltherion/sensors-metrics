@@ -21,7 +21,7 @@ class DirectoryReaderImplSpec extends AsyncWordSpec with Matchers {
           .getFiles(emptyDirectory)
           .toListL
           .runToFuture
-          .map(_.isEmpty shouldBe true)
+          .map(_ shouldBe List())
       }
 
       "return a nonempty stream of files in a nonempty directory is provided" in {
