@@ -1,7 +1,7 @@
 package com.datart.sensors.metrics.mapping
 
-import com.datart.sensors.metrics.model.Row._
-import com.datart.sensors.metrics.model._
+import com.datart.sensors.metrics.model.input.Row._
+import com.datart.sensors.metrics.model.input._
 import org.scalatest._
 
 @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))

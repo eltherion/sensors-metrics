@@ -14,6 +14,7 @@ object Dependencies {
     logbackClassic,
     metricsScala,
     monix,
+    pureConfig,
     scalaCache,
     scalatest
   )
