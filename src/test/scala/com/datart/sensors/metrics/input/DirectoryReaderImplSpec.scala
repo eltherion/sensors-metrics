@@ -10,7 +10,7 @@ class DirectoryReaderImplSpec extends AsyncWordSpec with Matchers {
 
   private val testedImplementation = new DirectoryReaderImpl()
 
-  "A DirectoryReaderImplSpec" can {
+  "A DirectoryReaderImpl" can {
 
     "read directory" should {
 
