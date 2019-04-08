@@ -12,6 +12,6 @@ trait FileLinesReader {
 class FileLinesReaderImpl extends FileLinesReader {
 
   override def getLines(file: File): Observable[String] = {
-    Observable.fromIterable(file.toScala.lines.toIterable)
+    Observable.fromIterable(file.toScala.lineIterator.toIterable)
   }
 }

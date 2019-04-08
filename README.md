@@ -5,7 +5,32 @@ Application that extracts measurements from simple sensors log files and display
 
 ### Requirements
 
-### Starting
+* Java JDK 8 or higher installed and available on search path
+* SBT 1.0.0 or higher installed and available on search path
+* Git client installed and available on search path
+* Cloned repository for this project:
+
+```bash
+git clone https://github.com/eltherion/sensors-metrics.git
+```
+
+### Starting tests
+
+To run tests navigate to cloned repository folder and execute execute:
+
+```bash
+cd /path/to/cloned/repository
+sbt ";test;it:test"
+```
+
+### Starting application
+
+To run navigate to cloned repository folder and application execute command providing */path/to/your/input/directory* indicating directory with csv files:
+
+```bash
+cd /path/to/cloned/repository
+sbt "run /path/to/your/input/directory"
+```
 
 ## Background story
 

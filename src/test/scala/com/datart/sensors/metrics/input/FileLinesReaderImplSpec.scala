@@ -10,7 +10,7 @@ class FileLinesReaderImplSpec extends AsyncWordSpec with Matchers {
 
   private val testedImplementation = new FileLinesReaderImpl()
 
-  "A FileLinesReaderImplSpec" can {
+  "A FileLinesReaderImpl" can {
 
     "read file lines" should {
 

@@ -31,7 +31,7 @@ class FlowProviderImpl(
   override def runFlow(directory: File): Task[TotalReport] = {
     directoryReader
       .getFiles(directory)
-      .filter(p => p.getName.endsWith(".csv") && p.toScala.nonEmpty)
+      .filter(p => p.getName.toLowerCase.endsWith(".csv") && p.toScala.nonEmpty)
       .flatMap { csvFile =>
         metrics.counter(config.allFilesMetricName).inc()
         fileLinesReader.getLines(csvFile)
@@ -40,7 +40,10 @@ class FlowProviderImpl(
       .map[Unit](updateMetrics)
       .completedL
       .map { _ =>
-        metrics.registry.getMeters().asScala.toMap
+        metrics.registry.getMetrics.asScala.toMap.map {
+          case (metricName, m) =>
+            (metricName.replaceFirst(s"${getClass.getName}.", ""), m)
+        }
       }
       .flatMap(reportComposer.composeReport)
   }

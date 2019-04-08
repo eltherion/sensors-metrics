@@ -1,8 +1,15 @@
+import com.typesafe.config.Config
+
+val typesafeConfig = settingKey[Config]("Typesafe config object")
+
+
 ThisBuild / organization := "com.datart"
 ThisBuild / scalaVersion := "2.12.8"
 ThisBuild / version      := "1.0"
 
 val projectName = "sensors-metrics"
+
+val ItTest = config("it") extend Test
 
 val sensorsMetrics = Project(id = projectName, base = file("."))
   .settings(
@@ -56,8 +63,10 @@ val sensorsMetrics = Project(id = projectName, base = file("."))
       "-Ywarn-value-discard"               // Warn when non-Unit expression results are unused.
     ),
     fork in Test := true,
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
+    inConfig(ItTest)(Defaults.itSettings)
 )
+  .configs(ItTest)
 
 wartremoverErrors ++= Warts.all
 coverageEnabled := true

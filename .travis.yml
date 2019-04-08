@@ -13,6 +13,6 @@ jdk:
 scala:
   - 2.12.8
 
-script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test
+script: sbt ++$TRAVIS_SCALA_VERSION ";clean;test;it:test;coverage"
 
 after_success: "sbt coverageReport coveralls"

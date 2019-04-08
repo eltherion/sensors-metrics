@@ -7,6 +7,7 @@ import com.datart.sensors.metrics.model.report.TotalReport
 import monix.execution.Scheduler
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.scalatest._
+import pureconfig.generic.auto._
 
 class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultInstrumented {
 
