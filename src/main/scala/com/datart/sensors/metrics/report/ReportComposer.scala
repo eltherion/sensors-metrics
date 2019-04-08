@@ -29,26 +29,26 @@ class ReportComposerImpl(config: Config) extends ReportComposer {
   }
 
   private def extractFlowMetrics(metrics: Map[String, Metric]): (Long, Long, Long) = {
-    val allFilesCount = metrics.get(config.allFilesMetricName).fold(0L) {
-      case c: Counter =>
-        c.getCount
-      case _ =>
-        0
-    }
+    val allFilesCount = metrics
+      .collect {
+        case (metricName, c: Counter) => (metricName, c)
+      }
+      .get(config.allFilesMetricName)
+      .fold(0L)(_.getCount)
 
-    val allMeasurementsCount = metrics.get(config.allMeasurementsMetricName).fold(0L) {
-      case c: Counter =>
-        c.getCount
-      case _ =>
-        0
-    }
+    val allMeasurementsCount = metrics
+      .collect {
+        case (metricName, c: Counter) => (metricName, c)
+      }
+      .get(config.allMeasurementsMetricName)
+      .fold(0L)(_.getCount)
 
-    val failedMeasurementsCount = metrics.get(config.failedMeasurementsMetricName).fold(0L) {
-      case c: Counter =>
-        c.getCount
-      case _ =>
-        0
-    }
+    val failedMeasurementsCount = metrics
+      .collect {
+        case (metricName, c: Counter) => (metricName, c)
+      }
+      .get(config.failedMeasurementsMetricName)
+      .fold(0L)(_.getCount)
 
     (allFilesCount, allMeasurementsCount, failedMeasurementsCount)
   }
@@ -76,31 +76,35 @@ class ReportComposerImpl(config: Config) extends ReportComposer {
           val sensorName = metricName.replaceAll(config.failedSensorMetricNamePrefix, "")
           metricsForActive.keys.toSet.contains(sensorName)
       }
-      .map {
-        case (metricName, m) =>
+      .collect {
+        case (metricName, m: Histogram) =>
           (metricName.replaceAll(config.failedSensorMetricNamePrefix, ""), m)
       }
 
-    val onlyActive = metricsForActive.filterNot {
-      case (metricName, _) =>
-        onlyDead.keys.toSet.contains(metricName)
+    val onlyActive = metricsForActive.collect {
+      case (metricName, m: Histogram) if !onlyDead.keys.toSet.contains(metricName) =>
+        (metricName, m)
     }
 
-    val aliveSensorsReports = onlyActive.flatMap {
-      case (metricName, m: Histogram) =>
-        val snapshot = m.getSnapshot
-        Set(AliveSensorReport(metricName, snapshot.getMin, snapshot.getMean.round, snapshot.getMax))
-      case _ =>
-        Set.empty[AliveSensorReport]
-    }.toSet
+    val aliveSensorsReports = extractReportsForActive(onlyActive)
 
-    val deadSensorsReports = onlyDead.flatMap {
-      case (metricName, _: Histogram) =>
-        Set(DeadSensorReport(metricName))
-      case _ =>
-        Set.empty[DeadSensorReport]
-    }.toSet
+    val deadSensorsReports = extractReportsForDead(onlyDead)
 
     (aliveSensorsReports, deadSensorsReports)
+  }
+
+  private def extractReportsForActive(onlyActive: Map[String, Histogram]): Set[AliveSensorReport] = {
+    onlyActive.map {
+      case (metricName, m) =>
+        val snapshot = m.getSnapshot
+        AliveSensorReport(metricName, snapshot.getMin, snapshot.getMean.round, snapshot.getMax)
+    }.toSet
+  }
+
+  private def extractReportsForDead(onlyDead: Map[String, Histogram]): Set[DeadSensorReport] = {
+    onlyDead.map {
+      case (metricName, _) =>
+        DeadSensorReport(metricName)
+    }.toSet
   }
 }
