@@ -1,0 +1,11 @@
+Num of processed files: 2
+Num of processed measurements: 7
+Num of failed measurements: 2
+
+Sensors with highest avg humidity:
+
+sensor-id,min,avg,max
+s2,78,82,88
+s1,10,54,98
+s3,NaN,NaN,NaN
+s4,NaN,NaN,NaN
