@@ -6,7 +6,6 @@ object Dependencies {
   private val metricsScala    = "nl.grons"                %% "metrics4-scala"   % VersionsOf.metricsScala
   private val monix           = "io.monix"                %% "monix"            % VersionsOf.monix
   private val pureConfig      = "com.github.pureconfig"   %% "pureconfig"       % VersionsOf.pureConfig
-  private val scalaCache      = "com.github.cb372"        %% "scalacache-core"  % VersionsOf.scalaCache
   private val scalatest       = "org.scalatest"           %% "scalatest"        % VersionsOf.scalatest      % Test
 
   val all: Seq[ModuleID] = Seq(
@@ -15,7 +14,6 @@ object Dependencies {
     metricsScala,
     monix,
     pureConfig,
-    scalaCache,
     scalatest
   )
 }

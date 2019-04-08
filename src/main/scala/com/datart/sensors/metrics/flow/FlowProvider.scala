@@ -6,6 +6,7 @@ import better.files._
 import com.datart.sensors.metrics.config.Config
 import com.datart.sensors.metrics.input._
 import com.datart.sensors.metrics.mapping.RowMapper
+import com.datart.sensors.metrics.model.input.Row
 import com.datart.sensors.metrics.model.input.Row._
 import com.datart.sensors.metrics.model.report.TotalReport
 import com.datart.sensors.metrics.report.ReportComposer
@@ -36,21 +37,23 @@ class FlowProviderImpl(
         fileLinesReader.getLines(csvFile)
       }
       .map(rowMapper.toRow)
-      .map[Unit] {
-        case SuccessfulMeasurement(sensor, humidity) =>
-          metrics.counter(config.allMeasurementsMetricName).inc()
-          metrics.histogram(sensor.name) += humidity.value
-        case FailedMeasurement(sensor) =>
-          metrics.counter(config.allMeasurementsMetricName).inc()
-          metrics.counter(config.failedMeasurementsMetricName).inc()
-          val _ = metrics.histogram(s"${config.failedSensorMetricNamePrefix}${sensor.name}")
-        case _ =>
-          ()
-      }
+      .map[Unit](updateMetrics)
       .completedL
       .map { _ =>
         metrics.registry.getMeters().asScala.toMap
       }
       .flatMap(reportComposer.composeReport)
+  }
+
+  private def updateMetrics: Row => Unit = {
+    case SuccessfulMeasurement(sensor, humidity) =>
+      metrics.counter(config.allMeasurementsMetricName).inc()
+      metrics.histogram(sensor.name) += humidity.value
+    case FailedMeasurement(sensor) =>
+      metrics.counter(config.allMeasurementsMetricName).inc()
+      metrics.counter(config.failedMeasurementsMetricName).inc()
+      val _ = metrics.histogram(s"${config.failedSensorMetricNamePrefix}${sensor.name}")
+    case _ =>
+      ()
   }
 }
