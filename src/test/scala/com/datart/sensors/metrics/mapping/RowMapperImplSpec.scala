@@ -9,7 +9,7 @@ class RowMapperImplSpec extends WordSpec with Matchers {
 
   private val testedImplementation = new RowMapperImpl()
 
-  "A RowMapperImplSpec" can {
+  "A RowMapperImpl" can {
 
     "map raw row to domain model" should {
 

@@ -40,6 +40,6 @@ class ReportModelToStringSpec extends WordSpec with Matchers {
           sensorName = "s4"
         )
       )
-    ).toString shouldBe Resource.getAsString("valid_inputs/expected_output.txt")
+    ).toString shouldBe Resource.getAsString("expected_output.txt")
   }
 }

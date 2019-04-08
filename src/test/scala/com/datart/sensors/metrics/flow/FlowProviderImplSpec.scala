@@ -16,6 +16,7 @@ import monix.eval.Task
 import monix.execution.Scheduler
 import monix.reactive.Observable
 import org.scalatest._
+import pureconfig.generic.auto._
 
 class FlowProviderImplSpec extends AsyncWordSpec with Matchers {
   private implicit val scheduler: Scheduler = Scheduler.global

@@ -2,6 +2,7 @@ import sbt._
 
 object Dependencies {
   private val betterFiles     = "com.github.pathikrit"        %% "better-files"     % VersionsOf.betterFiles
+  private val janino          = "org.codehaus.janino"         %  "janino"           % VersionsOf.janino
   private val logbackClassic  = "ch.qos.logback"              %  "logback-classic"  % VersionsOf.logbackClassic
   private val metricsScala    = "nl.grons"                    %% "metrics4-scala"   % VersionsOf.metricsScala
   private val monix           = "io.monix"                    %% "monix"            % VersionsOf.monix
@@ -11,6 +12,7 @@ object Dependencies {
 
   val all: Seq[ModuleID] = Seq(
     betterFiles,
+    janino,
     logbackClassic,
     metricsScala,
     monix,
