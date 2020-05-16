@@ -3,6 +3,8 @@ package com.datart.sensors.metrics.flow
 import java.io.{File => JFile}
 
 import better.files._
+import cats.implicits.catsStdInstancesForTry
+import monix.eval._
 import com.codahale.metrics.Metric
 import com.datart.sensors.metrics.config.Config
 import com.datart.sensors.metrics.input._
@@ -12,16 +14,21 @@ import com.datart.sensors.metrics.model.input.{Humidity, Sensor}
 import com.datart.sensors.metrics.model.report.SensorReport._
 import com.datart.sensors.metrics.model.report._
 import com.datart.sensors.metrics.report.ReportComposer
-import monix.eval.Task
 import monix.execution.Scheduler
 import monix.reactive.Observable
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
+import org.scalatest.wordspec.AnyWordSpec
 import pureconfig._
 import pureconfig.generic.auto._
 
-class FlowProviderImplSpec extends AsyncWordSpec with Matchers {
+import scala.concurrent.duration.Duration
+import scala.util._
+
+class FlowProviderImplSpec extends AnyWordSpec with Matchers {
   private implicit val scheduler: Scheduler = Scheduler.global
+  private implicit val taskLift: TaskLift[Try] = new TaskLift[Try] {
+    override def apply[A](task: Task[A]): Try[A] = Try(task.runSyncUnsafe(Duration.Inf))
+  }
 
   private val config = ConfigSource.default.loadOrThrow[Config]
 
@@ -45,19 +52,19 @@ class FlowProviderImplSpec extends AsyncWordSpec with Matchers {
       .fromIterable(Seq(new JFile(getClass.getResource("/valid_inputs/csv/leader-1.csv").getPath)))
   private val mockedFileLinesReader: FileLinesReader = _ =>
     Observable.fromIterable(Seq("sensor-id,humidity", "s1,0", "s2,NaN"))
-  private val mockedRowMapper: RowMapper = {
-    case "sensor-id,humidity" => Ignored
-    case "s1,0"               => SuccessfulMeasurement(Sensor("s1"), Humidity(0))
-    case _                    => FailedMeasurement(Sensor("s2"))
+  private val mockedRowMapper: RowMapper[Try] = {
+    case "sensor-id,humidity" => Success(Ignored)
+    case "s1,0"               => Success(SuccessfulMeasurement(Sensor("s1"), Humidity(0)))
+    case _                    => Success(FailedMeasurement(Sensor("s2")))
   }
 
-  private val mockedReportComposer = new ReportComposer {
-    override def composeReport(metrics: Map[String, Metric]): Task[TotalReport] = {
-      Task(expectedReport)
+  private val mockedReportComposer = new ReportComposer[Try] {
+    override def composeReport(metrics: Map[String, Metric]): Try[TotalReport] = {
+      Try(expectedReport)
     }
   }
 
-  private val testedImplementation = new FlowProviderImpl(
+  private val testedImplementation: FlowProviderImpl[Try] = new FlowProviderImpl(
     config,
     mockedDirectoryReader,
     mockedFileLinesReader,
@@ -72,9 +79,7 @@ class FlowProviderImplSpec extends AsyncWordSpec with Matchers {
       "return flow for directory" in {
 
         testedImplementation
-          .runFlow(File.newTemporaryDirectory().toJava)
-          .runToFuture
-          .map(_ shouldBe expectedReport)
+          .runFlow(File.newTemporaryDirectory().toJava) shouldBe Success(expectedReport)
       }
     }
   }

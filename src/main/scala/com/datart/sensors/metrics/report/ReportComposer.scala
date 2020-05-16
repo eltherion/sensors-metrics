@@ -1,18 +1,19 @@
 package com.datart.sensors.metrics.report
 
+import cats.MonadError
 import com.codahale.metrics._
 import com.datart.sensors.metrics.config.Config
 import com.datart.sensors.metrics.model.report.SensorReport._
 import com.datart.sensors.metrics.model.report._
-import monix.eval.Task
 
-trait ReportComposer {
-  def composeReport(metrics: Map[String, Metric]): Task[TotalReport]
+trait ReportComposer[F[_]] {
+  def composeReport(metrics: Map[String, Metric]): F[TotalReport]
 }
 
-class ReportComposerImpl(config: Config) extends ReportComposer {
-  override def composeReport(metrics: Map[String, Metric]): Task[TotalReport] = {
-    Task {
+class ReportComposerImpl[F[_]](config: Config)(implicit monadError: MonadError[F, Throwable])
+    extends ReportComposer[F] {
+  override def composeReport(metrics: Map[String, Metric]): F[TotalReport] = {
+    monadError.pure {
 
       val (allFilesCount, allMeasurementsCount, failedMeasurementsCount) = extractFlowMetrics(metrics)
 
@@ -81,7 +82,7 @@ class ReportComposerImpl(config: Config) extends ReportComposer {
       }
 
     val aliveSensorsReports = extractReportsForActive(onlyActiveHistograms)
-    val deadSensorsReports = extractReportsForDead(onlyDeadHistograms)
+    val deadSensorsReports  = extractReportsForDead(onlyDeadHistograms)
 
     (aliveSensorsReports, deadSensorsReports)
   }

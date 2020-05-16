@@ -1,13 +1,14 @@
 package com.datart.sensors.metrics.mapping
 
+import cats.MonadError
 import com.datart.sensors.metrics.model.input.Row._
 import com.datart.sensors.metrics.model.input._
 
-trait RowMapper {
-  def toRow(rawRow: String): Row
+trait RowMapper[F[_]] {
+  def toRow(rawRow: String): F[Row]
 }
 
-class RowMapperImpl extends RowMapper {
+class RowMapperImpl[F[_]](implicit monadError: MonadError[F, Throwable]) extends RowMapper[F] {
 
   private val failedMeasureR = ".*?(\\S+).*?,.*?(?:NaN).*?".r
   private val measureR       = ".*?(\\S+).*?,.*?(-?\\d+).*?".r
@@ -16,7 +17,7 @@ class RowMapperImpl extends RowMapper {
   private val maxHumidity        = 100
   private val validHumidityRange = Range(minHumidity, maxHumidity)
 
-  override def toRow(rawRow: String): Row = {
+  override def toRow(rawRow: String): F[Row] = monadError.pure {
     rawRow match {
       case measureR(sensorId, humidity) =>
         val h = humidity.toInt

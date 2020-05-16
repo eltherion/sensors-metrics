@@ -1,23 +1,23 @@
 package com.datart.sensors.metrics.report
 
+import cats.implicits.catsStdInstancesForTry
 import com.codahale.metrics.Metric
 import com.datart.sensors.metrics.config.Config
 import com.datart.sensors.metrics.model.report.SensorReport._
 import com.datart.sensors.metrics.model.report.TotalReport
-import monix.execution.Scheduler
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import pureconfig._
 import pureconfig.generic.auto._
 
-class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultInstrumented {
+import scala.util._
 
-  private implicit val scheduler: Scheduler = Scheduler.global
+class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultInstrumented {
 
   private val config = ConfigSource.default.loadOrThrow[Config]
 
-  private val testedImplementation = new ReportComposerImpl(config)
+  private val testedImplementation: ReportComposerImpl[Try] = new ReportComposerImpl(config)
 
   "A ReportComposerImpl" can {
 
@@ -33,9 +33,7 @@ class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultIns
         )
 
         testedImplementation
-          .composeReport(Map.empty[String, Metric])
-          .runToFuture
-          .map(_ shouldBe expectedReport)
+          .composeReport(Map.empty[String, Metric]) shouldBe Success(expectedReport)
       }
 
       "return report for nonempty metrics set" in {
@@ -91,9 +89,7 @@ class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultIns
         )
 
         testedImplementation
-          .composeReport(mockedMetrics)
-          .runToFuture
-          .map(_ shouldBe expectedReport)
+          .composeReport(mockedMetrics) shouldBe Success(expectedReport)
       }
     }
   }
