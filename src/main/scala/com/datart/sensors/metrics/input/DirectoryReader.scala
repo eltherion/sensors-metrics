@@ -14,7 +14,7 @@ class DirectoryReaderImpl extends DirectoryReader {
 
   override def getFiles(directory: File): Observable[File] = {
     Observable.fromIterator {
-      Task(directory.toScala.children.map(_.toJava))
+      Task.delay(directory.toScala.children.map(_.toJava))
     }
   }
 }

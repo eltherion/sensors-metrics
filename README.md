@@ -25,11 +25,34 @@ sbt ";test;it:test"
 
 ### Starting application
 
-To run navigate to cloned repository folder and application execute command providing */path/to/your/input/directory* indicating directory with csv files:
+Navigate to cloned repository folder:
 
 ```bash
 cd /path/to/cloned/repository
-sbt "run /path/to/your/input/directory"
+```
+
+Then execute following command providing */path/to/your/input/directory* indicating directory with csv files and one of the available implementations:
+
+#### Monix Task
+
+```bash
+sbt "runMain com.datart.sensors.metrics.MainMonixTaskImpl /path/to/your/input/directory"
+```
+#### Cats Effect IO
+
+```bash
+sbt "runMain com.datart.sensors.metrics.MainCatsEffectIOImpl /path/to/your/input/directory"
+```
+#### Future
+
+```bash
+sbt "runMain com.datart.sensors.metrics.MainFutureImpl /path/to/your/input/directory"
+```
+
+#### ZIO Task
+
+```bash
+sbt "runMain com.datart.sensors.metrics.MainZIOTaskImpl /path/to/your/input/directory"
 ```
 
 ## Background story

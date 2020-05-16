@@ -8,6 +8,7 @@ object Dependencies {
   private val monix           = "io.monix"                    %% "monix"            % VersionsOf.monix
   private val pureConfig      = "com.github.pureconfig"       %% "pureconfig"       % VersionsOf.pureConfig
   private val scalaLogging    = "com.typesafe.scala-logging"  %% "scala-logging"    % VersionsOf.scalaLogging
+  private val zioInteropCats  = "dev.zio"                     %% "zio-interop-cats" % VersionsOf.zioInteropCats
   private val scalatest       = "org.scalatest"               %% "scalatest"        % VersionsOf.scalatest      % Test
 
   val all: Seq[ModuleID] = Seq(
@@ -18,6 +19,7 @@ object Dependencies {
     monix,
     pureConfig,
     scalaLogging,
+    zioInteropCats,
     scalatest
   )
 }

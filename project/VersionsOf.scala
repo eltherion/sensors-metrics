@@ -7,5 +7,6 @@ object VersionsOf {
   val pureConfig      = "0.12.3"
   val scalaCache      = "0.27.0"
   val scalaLogging    = "3.9.2"
+  val zioInteropCats  = "2.0.0.0-RC13"
   val scalatest       = "3.1.2"
 }
