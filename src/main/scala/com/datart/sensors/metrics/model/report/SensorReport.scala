@@ -5,7 +5,7 @@ sealed abstract class SensorReport
 object SensorReport {
   final case class AliveSensorReport(sensorName: String, min: Long, avg: Long, max: Long) {
     override def toString: String = {
-      s"$sensorName,$min,$avg,$max"
+      s"$sensorName,${min.toString},${avg.toString},${max.toString}"
     }
   }
 

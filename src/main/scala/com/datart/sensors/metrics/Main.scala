@@ -7,6 +7,7 @@ import com.datart.sensors.metrics.mapping.RowMapperImpl
 import com.datart.sensors.metrics.report.ReportComposerImpl
 import com.typesafe.scalalogging.StrictLogging
 import monix.execution.Scheduler
+import pureconfig._
 import pureconfig.generic.auto._
 
 import scala.concurrent.Await
@@ -17,7 +18,7 @@ object Main extends App with StrictLogging {
 
   private implicit val scheduler: Scheduler = Scheduler.global
 
-  private val config         = pureconfig.loadConfigOrThrow[Config]
+  private val config         = ConfigSource.default.loadOrThrow[Config]
   private val inputValidator = new InputValidatorImpl()
 
   private val validatedInput = inputValidator.validateInput(args)
@@ -52,7 +53,7 @@ object Main extends App with StrictLogging {
 
       val _ = logger.info(
         s"""
-           |$totalReport""".stripMargin
+           |${totalReport.toString}""".stripMargin
       )
     }
   )

@@ -1,11 +1,11 @@
 object VersionsOf {
-  val betterFiles     = "3.7.1"
-  val janino          = "3.0.12"
+  val betterFiles     = "3.9.0"
+  val janino          = "3.1.2"
   val logbackClassic  = "1.2.3"
-  val metricsScala    = "4.0.4"
-  val monix           = "3.0.0-RC2"
-  val pureConfig      = "0.10.2"
+  val metricsScala    = "4.1.5"
+  val monix           = "3.2.1"
+  val pureConfig      = "0.12.3"
   val scalaCache      = "0.27.0"
   val scalaLogging    = "3.9.2"
-  val scalatest       = "3.0.7"
+  val scalatest       = "3.1.2"
 }

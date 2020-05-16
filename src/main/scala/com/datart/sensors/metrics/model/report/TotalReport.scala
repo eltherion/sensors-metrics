@@ -20,9 +20,9 @@ final case class TotalReport(
       s"""${sortedByNameAsc.map(_.toString).mkString("\n")}"""
     }
 
-    s"""Num of processed files: $allFilesProcessed
-       |Num of processed measurements: $allMeasurementsProcessed
-       |Num of failed measurements: $failedMeasurements
+    s"""Num of processed files: ${allFilesProcessed.toString}
+       |Num of processed measurements: ${allMeasurementsProcessed.toString}
+       |Num of failed measurements: ${failedMeasurements.toString}
        |
        |Sensors with highest avg humidity:
        |

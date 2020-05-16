@@ -1,7 +1,8 @@
 package com.datart.sensors.metrics
 
 import better.files._
-import org.scalatest._
+import org.scalatest.wordspec.AsyncWordSpec
+import org.scalatest.matchers.should.Matchers
 
 class AppIntegrationTest extends AsyncWordSpec with Matchers {
 

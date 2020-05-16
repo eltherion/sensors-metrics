@@ -15,13 +15,15 @@ import com.datart.sensors.metrics.report.ReportComposer
 import monix.eval.Task
 import monix.execution.Scheduler
 import monix.reactive.Observable
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
+import pureconfig._
 import pureconfig.generic.auto._
 
 class FlowProviderImplSpec extends AsyncWordSpec with Matchers {
   private implicit val scheduler: Scheduler = Scheduler.global
 
-  private val config = pureconfig.loadConfigOrThrow[Config]
+  private val config = ConfigSource.default.loadOrThrow[Config]
 
   private val expectedReport = TotalReport(
     allFilesProcessed = 1,

@@ -3,11 +3,12 @@ package com.datart.sensors.metrics.input
 import java.util.UUID
 
 import better.files._
-import com.datart.sensors.metrics.input.InputDirectoryError._
-import org.scalatest._
 import cats.syntax.validated._
+import com.datart.sensors.metrics.input.InputDirectoryError._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class InputValidatorImplSpec extends WordSpec with Matchers {
+class InputValidatorImplSpec extends AnyWordSpec with Matchers {
   private val testedImplementation = new InputValidatorImpl()
 
   "An InputValidatorImpl" can {
