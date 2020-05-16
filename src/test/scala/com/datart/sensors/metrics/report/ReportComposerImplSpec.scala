@@ -6,14 +6,16 @@ import com.datart.sensors.metrics.model.report.SensorReport._
 import com.datart.sensors.metrics.model.report.TotalReport
 import monix.execution.Scheduler
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
+import pureconfig._
 import pureconfig.generic.auto._
 
 class ReportComposerImplSpec extends AsyncWordSpec with Matchers with DefaultInstrumented {
 
   private implicit val scheduler: Scheduler = Scheduler.global
 
-  private val config = pureconfig.loadConfigOrThrow[Config]
+  private val config = ConfigSource.default.loadOrThrow[Config]
 
   private val testedImplementation = new ReportComposerImpl(config)
 

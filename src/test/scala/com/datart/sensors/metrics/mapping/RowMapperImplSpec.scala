@@ -2,10 +2,11 @@ package com.datart.sensors.metrics.mapping
 
 import com.datart.sensors.metrics.model.input.Row._
 import com.datart.sensors.metrics.model.input._
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
-class RowMapperImplSpec extends WordSpec with Matchers {
+class RowMapperImplSpec extends AnyWordSpec with Matchers {
 
   private val testedImplementation = new RowMapperImpl()
 
@@ -18,9 +19,9 @@ class RowMapperImplSpec extends WordSpec with Matchers {
         val humidity               = 10
         val expectedMeasurementRow = SuccessfulMeasurement(Sensor(sensorId), Humidity(humidity))
 
-        testedImplementation.toRow(s"$sensorId,$humidity") shouldBe expectedMeasurementRow
-        testedImplementation.toRow(s" $sensorId , $humidity ") shouldBe expectedMeasurementRow
-        testedImplementation.toRow(s" $sensorId , {ignored_chars}$humidity{ignored_chars}") shouldBe expectedMeasurementRow
+        testedImplementation.toRow(s"$sensorId,${humidity.toString}") shouldBe expectedMeasurementRow
+        testedImplementation.toRow(s" $sensorId , ${humidity.toString} ") shouldBe expectedMeasurementRow
+        testedImplementation.toRow(s" $sensorId , {ignored_chars}${humidity.toString}{ignored_chars}") shouldBe expectedMeasurementRow
       }
 
       "map failed measurement row correctly" in {

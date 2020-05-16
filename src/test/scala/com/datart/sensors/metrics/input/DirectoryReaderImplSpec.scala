@@ -1,7 +1,8 @@
 package com.datart.sensors.metrics.input
 
 import monix.execution.Scheduler
-import org.scalatest._
+import org.scalatest.wordspec.AsyncWordSpec
+import org.scalatest.matchers.should.Matchers
 import better.files._
 
 class DirectoryReaderImplSpec extends AsyncWordSpec with Matchers {

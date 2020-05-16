@@ -1,10 +1,11 @@
 package com.datart.sensors.metrics.model.report
 
-import com.datart.sensors.metrics.model.report.SensorReport._
-import org.scalatest._
 import better.files._
+import com.datart.sensors.metrics.model.report.SensorReport._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ReportModelToStringSpec extends WordSpec with Matchers {
+class ReportModelToStringSpec extends AnyWordSpec with Matchers {
   "An AliveSensorReport can be formatted correctly" in {
     AliveSensorReport("s1", 0L, 0L, 0L).toString shouldBe "s1,0,0,0"
   }

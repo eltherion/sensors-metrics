@@ -1,8 +1,9 @@
 package com.datart.sensors.metrics.input
 
 import java.io.File
-import better.files._
 
+import better.files._
+import monix.eval.Task
 import monix.reactive.Observable
 
 trait FileLinesReader {
@@ -12,6 +13,6 @@ trait FileLinesReader {
 class FileLinesReaderImpl extends FileLinesReader {
 
   override def getLines(file: File): Observable[String] = {
-    Observable.fromIterable(file.toScala.lineIterator.toIterable)
+    Observable.fromIterator(Task.defer(Task(file.toScala.lineIterator)))
   }
 }

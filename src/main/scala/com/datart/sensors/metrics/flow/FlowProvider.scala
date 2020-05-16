@@ -13,7 +13,7 @@ import com.datart.sensors.metrics.report.ReportComposer
 import monix.eval.Task
 import nl.grons.metrics4.scala.DefaultInstrumented
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait FlowProvider {
   def runFlow(directory: File): Task[TotalReport]
