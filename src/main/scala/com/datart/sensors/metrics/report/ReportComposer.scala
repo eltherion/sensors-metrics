@@ -30,25 +30,22 @@ class ReportComposerImpl(config: Config) extends ReportComposer {
 
   private def extractFlowMetrics(metrics: Map[String, Metric]): (Long, Long, Long) = {
     val allFilesCount = metrics
-      .collect {
-        case (metricName, c: Counter) => (metricName, c)
-      }
-      .get(config.allFilesMetricName)
-      .fold(0L)(_.getCount)
+      .get(config.allFilesMetricName) match {
+      case Some(c: Counter) => c.getCount
+      case _                => 0L
+    }
 
     val allMeasurementsCount = metrics
-      .collect {
-        case (metricName, c: Counter) => (metricName, c)
-      }
-      .get(config.allMeasurementsMetricName)
-      .fold(0L)(_.getCount)
+      .get(config.allMeasurementsMetricName) match {
+      case Some(c: Counter) => c.getCount
+      case _                => 0L
+    }
 
     val failedMeasurementsCount = metrics
-      .collect {
-        case (metricName, c: Counter) => (metricName, c)
-      }
-      .get(config.failedMeasurementsMetricName)
-      .fold(0L)(_.getCount)
+      .get(config.failedMeasurementsMetricName) match {
+      case Some(c: Counter) => c.getCount
+      case _                => 0L
+    }
 
     (allFilesCount, allMeasurementsCount, failedMeasurementsCount)
   }
@@ -57,38 +54,34 @@ class ReportComposerImpl(config: Config) extends ReportComposer {
     val flowMetricsNames =
       Set[String](config.allFilesMetricName, config.allMeasurementsMetricName, config.failedMeasurementsMetricName)
 
-    val sensorsMetrics = metrics
-      .filterNot {
-        case (metricName, _) =>
-          flowMetricsNames.contains(metricName)
-      }
+    val metricsForDeadGroupKey   = "metricsForDead"
+    val metricsForActiveGroupKey = "metricsForActive"
 
-    val metricsForDead = sensorsMetrics.filter {
-      case (metricName, _) =>
-        metricName.startsWith(config.failedSensorMetricNamePrefix)
+    val groupedMetrics = metrics.groupBy {
+      case (metricName, _) if metricName.startsWith(config.failedSensorMetricNamePrefix) =>
+        metricsForDeadGroupKey
+      case (metricName, _) if flowMetricsNames.contains(metricName) =>
+        ""
+      case _ =>
+        metricsForActiveGroupKey
     }
 
-    val metricsForActive = sensorsMetrics.toSet.diff(metricsForDead.toSet).toMap
+    val metricsForDead   = groupedMetrics.get(metricsForDeadGroupKey).fold(Map.empty[String, Metric])(identity)
+    val metricsForActive = groupedMetrics.get(metricsForActiveGroupKey).fold(Map.empty[String, Metric])(identity)
 
-    val onlyDead = metricsForDead
-      .filterNot {
-        case (metricName, _) =>
-          val sensorName = metricName.replaceAll(config.failedSensorMetricNamePrefix, "")
-          metricsForActive.keys.toSet.contains(sensorName)
-      }
+    val onlyDeadHistograms = metricsForDead
       .collect {
         case (metricName, m: Histogram) =>
           (metricName.replaceAll(config.failedSensorMetricNamePrefix, ""), m)
       }
+    val onlyActiveHistograms = metricsForActive
+      .collect {
+        case (metricName, m: Histogram) =>
+          (metricName, m)
+      }
 
-    val onlyActive = metricsForActive.collect {
-      case (metricName, m: Histogram) if !onlyDead.keys.toSet.contains(metricName) =>
-        (metricName, m)
-    }
-
-    val aliveSensorsReports = extractReportsForActive(onlyActive)
-
-    val deadSensorsReports = extractReportsForDead(onlyDead)
+    val aliveSensorsReports = extractReportsForActive(onlyActiveHistograms)
+    val deadSensorsReports = extractReportsForDead(onlyDeadHistograms)
 
     (aliveSensorsReports, deadSensorsReports)
   }
